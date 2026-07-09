@@ -1,8 +1,8 @@
 {
-  "com.example.firstapp": {
+  "com.rs5.smsbomberv4": {
     "status": "blocked",
     "msg": "এই অ্যাপটি এখন ব্লক করা আছে।",
-    "latest_version": 2,
+    "latest_version": 4,
     "download_url": "https://github.com/mdarif76769/Ai-Vishon/raw/main/app1-v2.apk"
   },
   "com.example.secondapp": {
