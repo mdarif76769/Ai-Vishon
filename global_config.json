@@ -1,0 +1,14 @@
+{
+  "com.example.firstapp": {
+    "status": "blocked",
+    "msg": "এই অ্যাপটি এখন ব্লক করা আছে।",
+    "latest_version": 2,
+    "download_url": "https://github.com/mdarif76769/Ai-Vishon/raw/main/app1-v2.apk"
+  },
+  "com.example.secondapp": {
+    "status": "active",
+    "msg": "অ্যাপটি সচল আছে।",
+    "latest_version": 5,
+    "download_url": "https://github.com/mdarif76769/Ai-Vishon/raw/main/app2-v5.apk"
+  }
+}
