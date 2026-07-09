@@ -1,57 +1,250 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MJ - Ultimate AI</title>
+    <title>MJ - Ultimate AI System</title>
+    <!-- Tailwind CSS এবং Fonts -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    
+    <!-- React এবং ReactDOM (ব্রাউজার ফ্রেন্ডলি CDN) -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    
+    <!-- Babel (ব্রাউজারে সরাসরি React JSX রান করার জন্য) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: #020617;
+            background: #010208;
             color: #f8fafc;
             overflow: hidden;
         }
         .glass {
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .neon-glow {
-            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.4);
         }
-        ::-webkit-scrollbar {
+        .custom-scrollbar::-webkit-scrollbar {
             width: 4px;
         }
-        ::-webkit-scrollbar-track {
+        .custom-scrollbar::-webkit-scrollbar-track {
             background: transparent;
         }
-        ::-webkit-scrollbar-thumb {
+        .custom-scrollbar::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
         }
     </style>
-
-<link rel="stylesheet" href="/index.css">
-<script type="importmap">
-{
-  "imports": {
-    "@google/genai": "https://esm.sh/@google/genai@^1.37.0",
-    "react/": "https://esm.sh/react@^19.2.3/",
-    "react": "https://esm.sh/react@^19.2.3",
-    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
-    "path": "https://esm.sh/path@^0.12.7",
-    "vite": "https://esm.sh/vite@^7.3.1",
-    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^5.1.2",
-    "url": "https://esm.sh/url@^0.11.4"
-  }
-}
-</script>
-  <script type="module" src="./assets/index-dfaikpwg.js"></script>
 </head>
 <body>
     <div id="root"></div>
+
+    <!-- রিয়্যাক্ট ও এমজে কোর অ্যাপ্লিকেশন লজিক শুরু -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef, useMemo } = React;
+
+        // ---- ১. AVATAR COMPONENT ----
+        const Avatar = ({ isSpeaking, isListening, mood, threatLevel = 0 }) => {
+            const theme = useMemo(() => {
+                if (threatLevel > 60) return { main: '#f43f5e', accent: '#881337' };
+                switch (mood?.toLowerCase()) {
+                    case 'happy': return { main: '#34d399', accent: '#064e3b' };
+                    case 'focused': return { main: '#3b82f6', accent: '#1e3a8a' };
+                    default: return { main: '#8b5cf6', accent: '#4c1d95' };
+                }
+            }, [mood, threatLevel]);
+
+            return (
+                <div className="relative w-full h-full flex items-center justify-center scale-110">
+                    <div className={`absolute w-full h-full rounded-full border border-blue-500/5 transition-all duration-[3s] ${isSpeaking ? 'scale-150 opacity-20 animate-pulse' : 'scale-100 opacity-5'}`}></div>
+                    <svg viewBox="0 0 100 100" className="w-full h-full max-w-[420px] drop-shadow-[0_0_60px_rgba(139,92,246,0.3)]">
+                        <defs>
+                            <linearGradient id="faceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#fff7ed" />
+                                <stop offset="100%" stopColor="#ffedd5" />
+                            </linearGradient>
+                            <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                <stop offset="0%" stopColor={theme.main} />
+                                <stop offset="100%" stopColor={theme.accent} />
+                            </linearGradient>
+                        </defs>
+                        <g className="animate-[bodySway_6s_ease-in-out_infinite]">
+                            <path d="M30 95 L22 84 Q22 68 50 68 Q78 68 78 84 L70 95 Z" fill="#1e1b4b" stroke={theme.main} strokeWidth="0.8" />
+                            <rect x="47.5" y="62" width="5" height="8" fill="url(#faceGrad)" />
+                            <g className={isSpeaking ? 'animate-[speakHead_1.2s_infinite]' : 'animate-[idleHead_5s_infinite]'}>
+                                <path d="M26 45 Q26 8 50 8 Q74 8 74 45 L74 72 L26 72 Z" fill="url(#hairGrad)" />
+                                <ellipse cx="50" cy="44" rx="16.5" ry="20" fill="url(#faceGrad)" />
+                                <path d="M32 32 Q30 14 50 14 Q70 14 68 32 Q50 24 32 32" fill="#1e1b4b" />
+                                <circle cx="43" cy="44" r="4.2" fill="#111827" />
+                                <circle cx="57" cy="44" r="4.2" fill="#111827" />
+                                {isSpeaking ? (
+                                    <path d="M44 58 Q50 66 56 58" stroke="#e11d48" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+                                ) : (
+                                    <path d="M46 58 Q50 60 54 58" stroke="#e11d48" strokeWidth="1.8" fill="none" strokeLinecap="round" />
+                                )}
+                                <circle cx="36" cy="50" r="3.5" fill="#fda4af" fillOpacity="0.4" />
+                                <circle cx="64" cy="50" r="3.5" fill="#fda4af" fillOpacity="0.4" />
+                            </g>
+                        </g>
+                    </svg>
+                    <style>{`
+                        @keyframes bodySway { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(2px); } }
+                        @keyframes idleHead { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+                        @keyframes speakHead { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-2px) scale(1.01); } }
+                    `}</style>
+                </div>
+            );
+        };
+
+        // ---- ২. DASHBOARD COMPONENT ----
+        const Dashboard = ({ onScan, activeApps = [] }) => {
+            const [load, setLoad] = useState(5);
+            useEffect(() => {
+                const int = setInterval(() => setLoad(Math.floor(Math.random() * 12) + 5), 3000);
+                return () => clearInterval(int);
+            }, []);
+            return (
+                <div className="glass p-4 rounded-2xl space-y-3 shadow-xl">
+                    <div className="flex justify-between items-center">
+                        <h4 className="text-[10px] font-black text-blue-400 tracking-widest flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+                            CORE MONITOR
+                        </h4>
+                    </div>
+                    <div className="space-y-2">
+                        <div className="flex justify-between text-[9px] text-slate-400 font-mono">
+                            <span>THROUGHPUT</span>
+                            <span>{load}%</span>
+                        </div>
+                        <div className="h-1 bg-slate-950 rounded-full overflow-hidden">
+                            <div className="h-full bg-blue-500 transition-all duration-500" style={{ width: `${load}%` }}></div>
+                        </div>
+                    </div>
+                    <button onClick={onScan} className="w-full py-2 bg-blue-600/10 hover:bg-blue-600/20 border border-blue-500/20 rounded-xl text-[9px] font-black text-blue-300 tracking-widest uppercase transition-all">
+                        OPTIMIZE CORES
+                    </button>
+                </div>
+            );
+        };
+
+        // ---- ৩. LIVE VOICE COMPONENT ----
+        const LiveVoice = ({ isLive, onToggle }) => {
+            const [bars, setBars] = useState(new Array(8).fill(12));
+            useEffect(() => {
+                if (isLive) {
+                    const int = setInterval(() => setBars(new Array(8).fill(0).map(() => Math.random() * 30 + 10)), 100);
+                    return () => clearInterval(int);
+                } else {
+                    setBars(new Array(8).fill(12));
+                }
+            }, [isLive]);
+            return (
+                <div className="glass p-4 rounded-2xl flex flex-col gap-3">
+                    <div className="flex items-center justify-center gap-1 h-8">
+                        {bars.map((h, i) => (
+                            <div key={i} className={`w-1 rounded-full transition-all duration-100 ${isLive ? 'bg-cyan-400 shadow-[0_0_8px_cyan]' : 'bg-slate-700'}`} style={{ height: `${h}px` }}></div>
+                        ))}
+                    </div>
+                    <button onClick={onToggle} className={`w-full py-2.5 rounded-xl font-black text-[9px] tracking-wider uppercase transition-all flex items-center justify-center gap-2 ${isLive ? 'bg-red-500/20 text-red-400 border border-red-500/30' : 'bg-gradient-to-r from-blue-600 to-indigo-700 text-white'}`}>
+                        {isLive ? 'HALT INTERFACE' : 'ESTABLISH VOICE LINK'}
+                    </button>
+                </div>
+            );
+        };
+
+        // ---- ৪. MAIN APP ROOT ----
+        const App = () => {
+            const [messages, setMessages] = useState([
+                { id: 1, role: 'mj', text: 'সিস্টেম অনলাইন কমান্ডার। আমি আপনার নির্দেশনার অপেক্ষায় আছি।' }
+            ]);
+            const [input, setInput] = useState('');
+            const [isLive, setIsLive] = useState(false);
+            const [isSpeaking, setIsSpeaking] = useState(false);
+            const chatEndRef = useRef(null);
+
+            const handleSend = () => {
+                if (!input.trim()) return;
+                const userMsg = { id: Date.now(), role: 'user', text: input };
+                setMessages(prev => [...prev, userMsg]);
+                setInput('');
+                
+                // কৃত্রিম রেসপন্স ইফেক্ট (যেহেতু এপিআই কি ছাড়া ব্রাউজার টেস্ট হচ্ছে)
+                setIsSpeaking(true);
+                setTimeout(() => {
+                    setMessages(prev => [...prev, { id: Date.now() + 1, role: 'mj', text: 'কমান্ড রিসিভড। ডাটাবেজ প্রসেসিং কমপ্লিট।' }]);
+                    setIsSpeaking(false);
+                }, 1500);
+            };
+
+            useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+
+            return (
+                <div className="flex h-screen w-screen bg-[#010208] text-slate-100 overflow-hidden">
+                    {/* বাম পাশের সাইডবার প্যানেল (মোবাইলে স্ক্রল হবে) */}
+                    <aside className="w-80 flex flex-col p-4 border-r border-white/5 bg-slate-950/80 backdrop-blur-2xl z-20 hidden md:flex">
+                        <div className="flex flex-col gap-5 h-full overflow-y-auto custom-scrollbar">
+                            <div className="flex items-center gap-3 py-2 border-b border-white/5">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-600 to-purple-800 flex items-center justify-center font-black text-white">MJ</div>
+                                <div>
+                                    <h2 className="text-sm font-black tracking-tight">MJ ANCHOR CORE</h2>
+                                    <p className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest font-bold">ONLINE</p>
+                                </div>
+                            </div>
+                            <LiveVoice isLive={isLive} onToggle={() => setIsLive(!isLive)} />
+                            <Dashboard onScan={() => alert('System Optimized!')} />
+                        </div>
+                    </aside>
+
+                    {/* ডান পাশের প্রধান ইন্টারফেস এলাকা */}
+                    <main className="flex-1 flex flex-col relative overflow-hidden bg-[radial-gradient(circle_at_50%_0%,_#0a1435_0%,_#010208_100%)]">
+                        {/* ব্যাকগ্রাউন্ডে ফ্লোটিং এভাটার */}
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-40 md:opacity-70">
+                            <div className="w-[450px] h-[450px]">
+                                <Avatar isSpeaking={isSpeaking} isListening={isLive} />
+                            </div>
+                        </div>
+
+                        {/* চ্যাট এরিয়া */}
+                        <div className="flex-1 overflow-y-auto p-6 space-y-4 z-10 custom-scrollbar">
+                            {messages.map(m => (
+                                <div key={m.id} className={`flex flex-col ${m.role === 'user' ? 'items-end' : 'items-start'}`}>
+                                    <div className={`max-w-[85%] md:max-w-[70%] rounded-2xl p-4 shadow-xl text-sm ${m.role === 'user' ? 'bg-blue-600/20 border border-blue-500/30 text-blue-50' : 'glass text-slate-100'}`}>
+                                        <p className="whitespace-pre-wrap">{m.text}</p>
+                                    </div>
+                                </div>
+                            ))}
+                            <div ref={chatEndRef} />
+                        </div>
+
+                        {/* ইনপুট কন্ট্রোল প্যানেল */}
+                        <div className="p-4 md:p-8 z-20 bg-gradient-to-t from-[#010208] via-[#010208]/80 to-transparent">
+                            <div className="max-w-3xl mx-auto flex gap-2 p-2 rounded-xl glass items-center">
+                                <input 
+                                    value={input}
+                                    onChange={e => setInput(e.target.value)}
+                                    onKeyDown={e => e.key === 'Enter' && handleSend()}
+                                    placeholder="MJ এর সাথে কথা বলুন..."
+                                    className="flex-1 bg-transparent border-none focus:outline-none px-4 py-2 text-sm placeholder:text-slate-600 text-white"
+                                />
+                                <button onClick={handleSend} className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-black text-xs uppercase rounded-lg transition-all">
+                                    SEND
+                                </button>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            );
+        };
+
+        // DOM-এ রেন্ডার করা
+        const root = RoyalReactDOM = royalty = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(App));
+    </script>
 </body>
 </html>
